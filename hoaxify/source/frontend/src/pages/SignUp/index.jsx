@@ -6,14 +6,23 @@ export function SignUp() {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   const [passwordRepeat, setPasswordRepeat] = useState();
+  const [apiProgress, setApiProgress] = useState(false);
+  const [succsessMessage, setSuccsessMessage] = useState();
 
   const onSubmit = (event) => {
     event.preventDefault();
-    axios.post("/api/v1/users", {
-      username,
-      email,
-      password,
-    });
+    setSuccsessMessage();
+    setApiProgress(true);
+    axios
+      .post("/api/v1/users", {
+        username,
+        email,
+        password,
+      })
+      .then((response) => {
+        setSuccsessMessage(response.data.message);
+      })
+      .finally(() => setApiProgress(false));
   };
 
   return (
@@ -71,11 +80,22 @@ export function SignUp() {
                 onChange={(event) => setPasswordRepeat(event.target.value)}
               />
             </div>
+            {succsessMessage && (
+              <div className="alert alert-success"> {succsessMessage}</div>
+            )}
             <div className="text-center">
               <button
                 className="btn btn-primary"
-                disabled={!password || password !== passwordRepeat}
+                disabled={
+                  apiProgress || !password || password !== passwordRepeat
+                }
               >
+                {apiProgress && (
+                  <span
+                    className="spinner-border spinner-border-sm"
+                    aria-hidden="true"
+                  ></span>
+                )}
                 Sign Up
               </button>
             </div>
