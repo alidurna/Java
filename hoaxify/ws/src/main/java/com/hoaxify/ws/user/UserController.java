@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.hoaxify.ws.error.ApiError;
 import com.hoaxify.ws.shared.GenericMessage;
 
+import jakarta.validation.Valid;
+
 @RestController // Bu sınıfın bir Spring MVC Controller olduğunu belirtir.
 public class UserController {
 
@@ -19,7 +21,7 @@ public class UserController {
     UserService userService;
  
     @PostMapping("/api/v1/users")  // Bu metodu, /api/v1/users URL'sine POST isteği geldiğinde çalıştırır.
-    ResponseEntity<?> createUser(@RequestBody User user){ // HTTP POST isteğinde gelen veriyi User objesine dönüştürür.
+    ResponseEntity<?> createUser(@Valid @RequestBody User user){ // HTTP POST isteğinde gelen veriyi User objesine dönüştürür.
         ApiError apiError = new ApiError(); // API hatalarını temsil etmek için bir ApiError nesnesi oluşturur.
         apiError.setPath("/api/v1/users"); // Hata durumunda hangi yolda olduğumuzu belirler.
         apiError.setMessage("Validation error"); // Hata mesajını ayarlar.
