@@ -1,25 +1,36 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+//import axios from "axios";
 import { signUp } from "./api";
+import { Input } from "./components/Input";
 
 export function SignUp() {
-  const [username, setUsername] = useState();
-  const [email, setEmail] = useState();
-  const [password, setPassword] = useState();
-  const [passwordRepeat, setPasswordRepeat] = useState();
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [passwordRepeat, setPasswordRepeat] = useState("");
   const [apiProgress, setApiProgress] = useState(false);
-  const [succsessMessage, setSuccsessMessage] = useState();
+  const [succsessMessage, setSuccsessMessage] = useState("");
   const [errors, setErrors] = useState({});
-  const [generalError, setGeneralError] = useState();
+  const [generalError, setGeneralError] = useState("");
 
   useEffect(() => {
-    setErrors({});
+    setErrors((lastErrors) => ({
+      ...lastErrors,
+      username: undefined,
+    }));
   }, [username]);
+
+  useEffect(() => {
+    setErrors((lastErrors) => ({
+      ...lastErrors,
+      email: undefined,
+    }));
+  }, [email]);
 
   const onSubmit = async (event) => {
     event.preventDefault();
-    setSuccsessMessage();
-    generalError();
+    setSuccsessMessage(undefined);
+    setGeneralError(undefined);
     setApiProgress(true);
     try {
       const response = await signUp({
@@ -35,9 +46,8 @@ export function SignUp() {
       ) {
         setErrors(axiosError.response.data.validationErrors);
       } else {
-        setGeneralError("Unexpected error occured. Please try again");
+        setGeneralError("Unexpected error occurred. Please try again.");
       }
-      //
     } finally {
       setApiProgress(false);
     }
@@ -51,32 +61,19 @@ export function SignUp() {
             <h1>Sign Up</h1>
           </div>
           <div className="card-body">
-            <div className="mb-3">
-              <label htmlFor="username" className="form-label">
-                UserName
-              </label>
-              <input
-                id="username"
-                type="text"
-                className={
-                  errors.username ? "form-control is-invalid" : "form-control"
-                }
-                onChange={(event) => setUsername(event.target.value)}
-              />
-              <div className="invalid-feedback">{errors.username}</div>
-            </div>
+            <Input
+              id="username"
+              label="Username"
+              error={errors.username}
+              onChange={(event) => setUsername(event.target.value)}
+            />
 
-            <div className="mb-3">
-              <label htmlFor="email" className="form-label">
-                E-mail
-              </label>
-              <input
-                id="email"
-                type="text"
-                className="form-control"
-                onChange={(event) => setEmail(event.target.value)}
-              />
-            </div>
+            <Input
+              id="email"
+              label="E-mail"
+              error={errors.email}
+              onChange={(event) => setEmail(event.target.value)}
+            />
 
             <div className="mb-3">
               <label htmlFor="password" className="form-label">
@@ -103,11 +100,11 @@ export function SignUp() {
             </div>
 
             {succsessMessage && (
-              <div className="alert alert-success"> {succsessMessage}</div>
+              <div className="alert alert-success">{succsessMessage}</div>
             )}
 
             {generalError && (
-              <div className="alert alert-danger"> {generalError}</div>
+              <div className="alert alert-danger">{generalError}</div>
             )}
 
             <div className="text-center">
