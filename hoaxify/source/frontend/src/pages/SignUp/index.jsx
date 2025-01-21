@@ -12,7 +12,6 @@ export function SignUp() {
   const [succsessMessage, setSuccsessMessage] = useState("");
   const [errors, setErrors] = useState({});
   const [generalError, setGeneralError] = useState("");
-
   useEffect(() => {
     setErrors((lastErrors) => ({
       ...lastErrors,
